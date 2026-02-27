@@ -18,7 +18,7 @@ is_holiday(date(2050, 12, 25))      # True — no tables to update
 ## Installation
 
 ```bash
-pip install isholiday
+pip install holiday-engine
 ```
 
 Python 3.11+ required. Zero external dependencies — pure stdlib.
@@ -79,7 +79,7 @@ TOML files are parsed once and cached for the lifetime of the process. Subsequen
 | **Custom calendars** | Drop in a `.toml` file | Write a Python class | Subclass + override methods | Pass date strings |
 | **Dependencies** | None (pure stdlib) | `python-dateutil` | `python-dateutil`, `lunardate`, `convertdate` | None |
 | **Who can edit calendars** | Anyone (config file) | Python developers only | Python developers only | Python developers only |
-| **Country coverage** | US (banking + market) | 249 country codes | ~80 countries | None built-in |
+| **Country coverage** | US, UK, Canada, Japan | 249 country codes | ~80 countries | None built-in |
 | **API surface** | 4 functions | Dict-like class interface | Class methods | Class methods |
 | **Python requirement** | 3.11+ | 3.10+ | 3.7+ | 2.7+ |
 
@@ -332,6 +332,100 @@ is_holiday(date(2025, 10, 13), calendar="banking")   # True
 is_holiday(date(2025, 10, 13), calendar="market")    # False
 ```
 
+### United Kingdom Calendar — 6 Holidays
+
+England and Wales bank holidays under the Banking and Financial Dealings Act 1971. Covers all holidays that fit the DOM/NOW rule pattern. Easter-dependent holidays (Good Friday, Easter Monday) require a future `EASTER` rule type.
+
+| Holiday | Rule | Observed Shift |
+|---------|------|----------------|
+| New Year's Day | January 1 | Sun→Mon |
+| Early May Bank Holiday | 1st Monday in May | — |
+| Spring Bank Holiday | Last Monday in May | — |
+| Summer Bank Holiday | Last Monday in August | — |
+| Christmas Day | December 25 | Sun→Mon |
+| Boxing Day | December 26 | Sun→Mon |
+
+```python
+from datetime import date
+from isholiday import get_holidays
+
+for holiday_date, name in get_holidays(2025, calendar="uk"):
+    print(f"  {holiday_date}  {name}")
+```
+
+### Canada Calendar — 9 Holidays
+
+Federal statutory holidays under the Canada Labour Code. Excludes Easter-dependent holidays and Victoria Day (which uses a "Monday on or before May 24" rule not yet supported). Provincial holidays vary — create province-specific TOML files for full coverage.
+
+| Holiday | Rule | Observed Shift |
+|---------|------|----------------|
+| New Year's Day | January 1 | Sun→Mon |
+| Family Day | 3rd Monday in February | — |
+| Canada Day | July 1 | Sun→Mon |
+| Labour Day | 1st Monday in September | — |
+| National Day for Truth and Reconciliation | September 30 | Sun→Mon |
+| Thanksgiving Day | 2nd Monday in October | — |
+| Remembrance Day | November 11 | Sun→Mon |
+| Christmas Day | December 25 | Sun→Mon |
+| Boxing Day | December 26 | Sun→Mon |
+
+```python
+from datetime import date
+from isholiday import is_holiday
+
+# Canadian Thanksgiving is the 2nd Monday in October (not the 4th Thursday)
+is_holiday(date(2025, 10, 13), calendar="canada")    # True  — Thanksgiving
+is_holiday(date(2025, 11, 27), calendar="canada")    # False — US Thanksgiving
+```
+
+### Japan Calendar — 14 Holidays
+
+National holidays defined by Japan's Act on National Holidays (国民の祝日に関する法律). Covers 14 of 16 holidays — excludes Vernal Equinox Day and Autumnal Equinox Day, which require astronomical calculation. Japan uses the *furikae kyūjitsu* (振替休日) substitute holiday system: Sunday holidays shift to the following Monday.
+
+| Holiday | Rule | Observed Shift |
+|---------|------|----------------|
+| New Year's Day (元日) | January 1 | Sun→Mon |
+| Coming of Age Day (成人の日) | 2nd Monday in January | — |
+| National Foundation Day (建国記念の日) | February 11 | Sun→Mon |
+| Emperor's Birthday (天皇誕生日) | February 23 | Sun→Mon |
+| Shōwa Day (昭和の日) | April 29 | Sun→Mon |
+| Constitution Memorial Day (憲法記念日) | May 3 | Sun→Mon |
+| Greenery Day (みどりの日) | May 4 | Sun→Mon |
+| Children's Day (こどもの日) | May 5 | Sun→Mon |
+| Marine Day (海の日) | 3rd Monday in July | — |
+| Mountain Day (山の日) | August 11 | Sun→Mon |
+| Respect for the Aged Day (敬老の日) | 3rd Monday in September | — |
+| Sports Day (スポーツの日) | 2nd Monday in October | — |
+| Culture Day (文化の日) | November 3 | Sun→Mon |
+| Labour Thanksgiving Day (勤労感謝の日) | November 23 | Sun→Mon |
+
+```python
+from datetime import date
+from isholiday import get_holiday
+
+# Golden Week
+get_holiday(date(2025, 5, 3), calendar="japan")   # "Constitution Memorial Day (憲法記念日)"
+get_holiday(date(2025, 5, 5), calendar="japan")   # "Children's Day (こどもの日)"
+
+# Marine Day — 3rd Monday in July
+get_holiday(date(2025, 7, 21), calendar="japan")  # "Marine Day (海の日)"
+```
+
+---
+
+## International Coverage Analysis
+
+IsHoliday's DOM/NOW rule engine covers a significant percentage of holidays worldwide. The two rule types handle any holiday that falls on either a fixed calendar date or an nth weekday of a month — which accounts for the majority of secular and civic holidays across countries.
+
+| Pattern | Coverage | Examples |
+|---------|----------|----------|
+| **DOM** (fixed date) | ~40% of world holidays | New Year's, Christmas, national independence days, fixed civic holidays |
+| **NOW** (nth weekday) | ~20–30% of world holidays | Thanksgiving variants, bank holidays, labour days, memorial days |
+| **Easter-dependent** | ~15–20% | Good Friday, Easter Monday, Ascension, Whit Monday (future `EASTER` rule type) |
+| **Astronomical / lunar** | ~10–15% | Chinese New Year, Eid, Diwali, equinox days (require lookup tables) |
+
+The built-in UK, Canada, and Japan calendars demonstrate that most holidays in developed economies fit the DOM/NOW pattern. Countries with primarily fixed-date and nth-weekday holidays — including Australia, Germany, France, the Netherlands, and most of the Americas — can be fully modeled with custom TOML files today.
+
 ---
 
 ## Custom Calendars
@@ -394,6 +488,9 @@ Returns `True` if the date is a weekday (Monday–Friday) **and** not a holiday 
 All four functions accept `calendar` as:
 - `"market"` — NYSE/NASDAQ holidays (default)
 - `"banking"` — Federal Reserve banking holidays
+- `"uk"` — United Kingdom bank holidays (England & Wales)
+- `"canada"` — Canada federal statutory holidays
+- `"japan"` — Japan national holidays (国民の祝日)
 - A file path — any custom TOML calendar file
 
 ---
@@ -403,6 +500,45 @@ All four functions accept `calendar` as:
 - **Python 3.11+** (uses `tomllib` from the standard library)
 - **Zero external dependencies** — no `pip install` chain, no version conflicts
 - **No network access required** — works offline, in CI/CD, in air-gapped environments
+
+## Unicode Support
+
+Holiday names support the full Unicode character set — including CJK ideographs, accented Latin characters, Arabic script, and any other UTF-8 encoded text. The TOML specification mandates UTF-8, and Python 3's `tomllib` parser enforces it. Holiday names are stored and returned exactly as written in the TOML file.
+
+```python
+from isholiday import get_holiday
+from datetime import date
+
+get_holiday(date(2025, 7, 21), calendar="japan")   # "Marine Day (海の日)"
+get_holiday(date(2025, 10, 13), calendar="japan")   # "Sports Day (スポーツの日)"
+```
+
+This means custom calendars can use native-language holiday names without any additional configuration:
+
+```toml
+[[holidays]]
+name = "Día de la Independencia"    # Spanish — México
+type = "DOM"
+month = 9
+day = 16
+# ...
+
+[[holidays]]
+name = "Fête nationale (Saint-Jean-Baptiste)"   # French — Québec
+type = "DOM"
+month = 6
+day = 24
+# ...
+
+[[holidays]]
+name = "Tag der Deutschen Einheit"   # German — Germany
+type = "DOM"
+month = 10
+day = 3
+# ...
+```
+
+No encoding flags, no locale settings, no special imports — UTF-8 throughout the entire pipeline.
 
 ## License
 

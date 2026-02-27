@@ -1,0 +1,243 @@
+# =============================================================================
+# Japan — National Holidays (国民の祝日)
+# =============================================================================
+#
+# National holidays defined by the Act on National Holidays (国民の祝日に関する法律).
+#
+# COVERAGE: 14 of 16 national holidays. Excludes Vernal Equinox Day and
+# Autumnal Equinox Day, which require astronomical calculation or annual
+# lookup tables (dates shift by ±1 day based on the solar equinox).
+#
+# Holiday type codes:
+#   DOM — Calendar Day of Month: fixed date (e.g., January 1st)
+#   NOW — Nth Weekday of Month: relative date (e.g., 2nd Monday in January)
+#
+# Weekday values use SQL Server convention:
+#   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
+#
+# Observed-date rules:
+#   Japan uses the "振替休日" (furikae kyūjitsu / substitute holiday) system:
+#   when a national holiday falls on Sunday, the following Monday becomes a
+#   substitute holiday. Saturday holidays are NOT shifted.
+#
+# NOT INCLUDED (require lookup tables):
+#   - Vernal Equinox Day (春分の日) — ~March 20-21, varies by year
+#   - Autumnal Equinox Day (秋分の日) — ~September 22-23, varies by year
+#
+# NOTE: Japan also recognizes "sandwiched day" holidays (国民の休日): if a
+# day falls between two national holidays, it becomes a holiday. This requires
+# post-computation logic not yet supported.
+#
+# =============================================================================
+
+[calendar]
+name        = "japan"
+description = "Japan national holidays (14 of 16, excludes equinox-dependent)"
+
+[types]
+DOM = "Calendar Day of Month — fixed date (e.g., Jan 1)"
+NOW = "Nth Weekday of Month — relative date (e.g., 2nd Monday in January)"
+
+# -----------------------------------------------------------------------------
+# January
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "New Year's Day (元日)"
+type               = "DOM"
+month              = 1
+day                = 1
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1949
+enabled            = true
+
+[[holidays]]
+name               = "Coming of Age Day (成人の日)"
+type               = "NOW"
+month              = 1
+day                = 0
+week               = 2
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 2000
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# February
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "National Foundation Day (建国記念の日)"
+type               = "DOM"
+month              = 2
+day                = 11
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1966
+enabled            = true
+
+[[holidays]]
+name               = "Emperor's Birthday (天皇誕生日)"
+type               = "DOM"
+month              = 2
+day                = 23
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 2020
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# April
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Shōwa Day (昭和の日)"
+type               = "DOM"
+month              = 4
+day                = 29
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 2007
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# May — Golden Week
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Constitution Memorial Day (憲法記念日)"
+type               = "DOM"
+month              = 5
+day                = 3
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1949
+enabled            = true
+
+[[holidays]]
+name               = "Greenery Day (みどりの日)"
+type               = "DOM"
+month              = 5
+day                = 4
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 2007
+enabled            = true
+
+[[holidays]]
+name               = "Children's Day (こどもの日)"
+type               = "DOM"
+month              = 5
+day                = 5
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1949
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# July
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Marine Day (海の日)"
+type               = "NOW"
+month              = 7
+day                = 0
+week               = 3
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 2003
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# August
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Mountain Day (山の日)"
+type               = "DOM"
+month              = 8
+day                = 11
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 2016
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# September
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Respect for the Aged Day (敬老の日)"
+type               = "NOW"
+month              = 9
+day                = 0
+week               = 3
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 2003
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# October
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Sports Day (スポーツの日)"
+type               = "NOW"
+month              = 10
+day                = 0
+week               = 2
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 2000
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# November
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Culture Day (文化の日)"
+type               = "DOM"
+month              = 11
+day                = 3
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1949
+enabled            = true
+
+[[holidays]]
+name               = "Labour Thanksgiving Day (勤労感謝の日)"
+type               = "DOM"
+month              = 11
+day                = 23
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1949
+enabled            = true

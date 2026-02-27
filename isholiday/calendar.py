@@ -54,6 +54,9 @@ _SQL_TO_ISO = {1: 7, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6}
 _BUILTIN_CALENDARS = {
     "banking": "holidays_banking.toml",
     "market":  "holidays_market.toml",
+    "uk":      "holidays_uk.toml",
+    "canada":  "holidays_canada.toml",
+    "japan":   "holidays_japan.toml",
 }
 
 # Module-level cache: calendar_key → list[HolidayDefinition]

@@ -3,19 +3,18 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "isholiday"
+name = "holiday-engine"
 version = "1.0.0"
 description = "Determine if a date is a US holiday — banking, market, or custom calendars via TOML"
 readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "MIT"}
+license = "MIT"
 authors = [{name = "FireByDragon"}]
 keywords = ["holiday", "banking", "market", "NYSE", "NASDAQ", "calendar", "business-day"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Financial and Insurance Industry",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",

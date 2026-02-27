@@ -311,5 +311,196 @@ class TestNonHolidayDates:
         assert get_holiday(date(2025, 3, 11)) is None
 
 
+# ============================================================================
+# International — United Kingdom bank holidays
+# ============================================================================
+
+class TestUKHolidays:
+    """UK bank holidays (England & Wales) using the 'uk' built-in calendar."""
+
+    def test_uk_new_years_day_2025(self):
+        """New Year's Day 2025 = Wednesday Jan 1."""
+        assert is_holiday(date(2025, 1, 1), calendar="uk") is True
+        assert get_holiday(date(2025, 1, 1), calendar="uk") == "New Year's Day"
+
+    def test_uk_early_may_bank_holiday_2025(self):
+        """Early May Bank Holiday 2025 = 1st Monday in May = May 5."""
+        assert is_holiday(date(2025, 5, 5), calendar="uk") is True
+        assert get_holiday(date(2025, 5, 5), calendar="uk") == "Early May Bank Holiday"
+
+    def test_uk_spring_bank_holiday_2025(self):
+        """Spring Bank Holiday 2025 = last Monday in May = May 26."""
+        assert is_holiday(date(2025, 5, 26), calendar="uk") is True
+        assert get_holiday(date(2025, 5, 26), calendar="uk") == "Spring Bank Holiday"
+
+    def test_uk_summer_bank_holiday_2025(self):
+        """Summer Bank Holiday 2025 = last Monday in August = Aug 25."""
+        assert is_holiday(date(2025, 8, 25), calendar="uk") is True
+        assert get_holiday(date(2025, 8, 25), calendar="uk") == "Summer Bank Holiday"
+
+    def test_uk_christmas_2025(self):
+        """Christmas Day 2025 = Thursday Dec 25."""
+        assert is_holiday(date(2025, 12, 25), calendar="uk") is True
+        assert get_holiday(date(2025, 12, 25), calendar="uk") == "Christmas Day"
+
+    def test_uk_boxing_day_2025(self):
+        """Boxing Day 2025 = Friday Dec 26."""
+        assert is_holiday(date(2025, 12, 26), calendar="uk") is True
+        assert get_holiday(date(2025, 12, 26), calendar="uk") == "Boxing Day"
+
+    def test_uk_holidays_2025_count(self):
+        """UK calendar has 6 holidays (excludes Easter-dependent)."""
+        holidays = get_holidays(2025, calendar="uk")
+        assert len(holidays) == 6
+
+    def test_uk_not_a_us_holiday(self):
+        """US Independence Day is not a UK holiday."""
+        assert is_holiday(date(2025, 7, 4), calendar="uk") is False
+
+    def test_uk_new_years_sunday_shifts_to_monday(self):
+        """UK New Year's 2023 (Sunday) → observed Monday Jan 2."""
+        assert is_holiday(date(2023, 1, 2), calendar="uk") is True
+        assert get_holiday(date(2023, 1, 2), calendar="uk") == "New Year's Day"
+
+
+# ============================================================================
+# International — Canada federal statutory holidays
+# ============================================================================
+
+class TestCanadaHolidays:
+    """Canada federal statutory holidays using the 'canada' built-in calendar."""
+
+    def test_canada_day_2025(self):
+        """Canada Day 2025 = Tuesday Jul 1."""
+        assert is_holiday(date(2025, 7, 1), calendar="canada") is True
+        assert get_holiday(date(2025, 7, 1), calendar="canada") == "Canada Day"
+
+    def test_canada_victoria_day_not_included(self):
+        """Victoria Day requires a BEFORE rule type — not in this calendar."""
+        # Victoria Day = Monday on or before May 24 (not a simple nth-weekday)
+        assert is_holiday(date(2025, 5, 19), calendar="canada") is False
+
+    def test_canada_labour_day_2025(self):
+        """Labour Day 2025 = 1st Monday in Sep = Sep 1."""
+        assert is_holiday(date(2025, 9, 1), calendar="canada") is True
+        assert get_holiday(date(2025, 9, 1), calendar="canada") == "Labour Day"
+
+    def test_canada_thanksgiving_2025(self):
+        """Canadian Thanksgiving 2025 = 2nd Monday in Oct = Oct 13."""
+        assert is_holiday(date(2025, 10, 13), calendar="canada") is True
+        assert get_holiday(date(2025, 10, 13), calendar="canada") == "Thanksgiving Day"
+
+    def test_canada_remembrance_day_2025(self):
+        """Remembrance Day 2025 = Tuesday Nov 11."""
+        assert is_holiday(date(2025, 11, 11), calendar="canada") is True
+        assert get_holiday(date(2025, 11, 11), calendar="canada") == "Remembrance Day"
+
+    def test_canada_truth_reconciliation_2025(self):
+        """National Day for Truth and Reconciliation 2025 = Tuesday Sep 30."""
+        assert is_holiday(date(2025, 9, 30), calendar="canada") is True
+
+    def test_canada_truth_reconciliation_before_enactment(self):
+        """Truth and Reconciliation not enacted before 2021."""
+        assert is_holiday(date(2020, 9, 30), calendar="canada") is False
+
+    def test_canada_holidays_2025_count(self):
+        """Canada calendar has 9 holidays in 2025 (excludes Easter + Victoria Day)."""
+        holidays = get_holidays(2025, calendar="canada")
+        assert len(holidays) == 9
+
+    def test_canada_boxing_day_2025(self):
+        """Boxing Day 2025 = Friday Dec 26."""
+        assert is_holiday(date(2025, 12, 26), calendar="canada") is True
+        assert get_holiday(date(2025, 12, 26), calendar="canada") == "Boxing Day"
+
+    def test_canada_family_day_2025(self):
+        """Family Day 2025 = 3rd Monday in Feb = Feb 17."""
+        assert is_holiday(date(2025, 2, 17), calendar="canada") is True
+        assert get_holiday(date(2025, 2, 17), calendar="canada") == "Family Day"
+
+
+# ============================================================================
+# International — Japan national holidays
+# ============================================================================
+
+class TestJapanHolidays:
+    """Japan national holidays using the 'japan' built-in calendar."""
+
+    def test_japan_new_years_day_2025(self):
+        """New Year's Day 2025 = Wednesday Jan 1."""
+        assert is_holiday(date(2025, 1, 1), calendar="japan") is True
+        assert get_holiday(date(2025, 1, 1), calendar="japan") == "New Year's Day (元日)"
+
+    def test_japan_coming_of_age_day_2025(self):
+        """Coming of Age Day 2025 = 2nd Monday in January = Jan 13."""
+        assert is_holiday(date(2025, 1, 13), calendar="japan") is True
+        assert get_holiday(date(2025, 1, 13), calendar="japan") == "Coming of Age Day (成人の日)"
+
+    def test_japan_national_foundation_day_2025(self):
+        """National Foundation Day 2025 = Tuesday Feb 11."""
+        assert is_holiday(date(2025, 2, 11), calendar="japan") is True
+
+    def test_japan_emperors_birthday_2025(self):
+        """Emperor's Birthday 2025 = Sunday Feb 23 → observed Monday Feb 24."""
+        assert is_holiday(date(2025, 2, 24), calendar="japan") is True
+        assert get_holiday(date(2025, 2, 24), calendar="japan") == "Emperor's Birthday (天皇誕生日)"
+
+    def test_japan_showa_day_2025(self):
+        """Shōwa Day 2025 = Tuesday Apr 29."""
+        assert is_holiday(date(2025, 4, 29), calendar="japan") is True
+
+    def test_japan_golden_week_2025(self):
+        """Golden Week: Constitution Day (May 3), Children's Day (May 5).
+
+        Greenery Day (May 4) falls on Sunday in 2025 — observed shifts to
+        Monday May 5, which overlaps with Children's Day. The engine resolves
+        May 5 as Children's Day; May 4 (Sunday) is not an observed holiday.
+        """
+        assert is_holiday(date(2025, 5, 3), calendar="japan") is True
+        assert is_holiday(date(2025, 5, 5), calendar="japan") is True
+        # May 4 is Sunday — Greenery Day shifts to May 5 (overlap with Children's Day)
+        assert is_holiday(date(2025, 5, 4), calendar="japan") is False
+
+    def test_japan_marine_day_2025(self):
+        """Marine Day 2025 = 3rd Monday in July = Jul 21."""
+        assert is_holiday(date(2025, 7, 21), calendar="japan") is True
+        assert get_holiday(date(2025, 7, 21), calendar="japan") == "Marine Day (海の日)"
+
+    def test_japan_mountain_day_2025(self):
+        """Mountain Day 2025 = Monday Aug 11."""
+        assert is_holiday(date(2025, 8, 11), calendar="japan") is True
+
+    def test_japan_respect_for_aged_day_2025(self):
+        """Respect for the Aged Day 2025 = 3rd Monday in Sep = Sep 15."""
+        assert is_holiday(date(2025, 9, 15), calendar="japan") is True
+
+    def test_japan_sports_day_2025(self):
+        """Sports Day 2025 = 2nd Monday in Oct = Oct 13."""
+        assert is_holiday(date(2025, 10, 13), calendar="japan") is True
+        assert get_holiday(date(2025, 10, 13), calendar="japan") == "Sports Day (スポーツの日)"
+
+    def test_japan_culture_day_2025(self):
+        """Culture Day 2025 = Monday Nov 3."""
+        assert is_holiday(date(2025, 11, 3), calendar="japan") is True
+
+    def test_japan_labour_thanksgiving_2025(self):
+        """Labour Thanksgiving Day 2025 = Sunday Nov 23 → observed Monday Nov 24."""
+        assert is_holiday(date(2025, 11, 24), calendar="japan") is True
+        assert get_holiday(date(2025, 11, 24), calendar="japan") == "Labour Thanksgiving Day (勤労感謝の日)"
+
+    def test_japan_holidays_2025_count(self):
+        """Japan calendar has 14 holidays (excludes equinox-dependent)."""
+        holidays = get_holidays(2025, calendar="japan")
+        assert len(holidays) == 14
+
+    def test_japan_us_holiday_not_in_japan(self):
+        """US Thanksgiving (4th Thursday in Nov) is not a Japanese holiday."""
+        assert is_holiday(date(2025, 11, 27), calendar="japan") is False
+
+    def test_japan_emperor_birthday_before_2020(self):
+        """Emperor's Birthday (Feb 23) was enacted in 2020 — 2019 should be False."""
+        assert is_holiday(date(2019, 2, 23), calendar="japan") is False
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

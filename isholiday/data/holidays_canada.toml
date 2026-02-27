@@ -1,0 +1,178 @@
+# =============================================================================
+# Canada — Federal Statutory Holidays
+# =============================================================================
+#
+# Federal holidays observed across all provinces and territories under the
+# Canada Labour Code.
+#
+# COVERAGE: 7 of 9 federal statutory holidays. Excludes Easter-dependent
+# holidays (Good Friday, Easter Monday) which require a future EASTER rule type.
+#
+# Holiday type codes:
+#   DOM — Calendar Day of Month: fixed date (e.g., July 1st)
+#   NOW — Nth Weekday of Month: relative date (e.g., 1st Monday in September)
+#
+# Weekday values use SQL Server convention:
+#   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
+#
+# Special sentinel: week = 10 means "last occurrence of that weekday in the month"
+#
+# Observed-date rules:
+#   When a federal holiday falls on a weekend, it is typically observed on the
+#   following Monday.
+#
+# NOT INCLUDED (require future rule types):
+#   - Good Friday (Easter - 2 days) — needs EASTER rule type
+#   - Easter Monday (Easter + 1 day) — needs EASTER rule type
+#   - Victoria Day (Monday on or before May 24) — needs BEFORE rule type
+#
+# NOTE: Provincial holidays vary significantly. This file covers federal
+# holidays only. Create province-specific TOML files for full coverage
+# (e.g., holidays_canada_on.toml for Ontario, holidays_canada_qc.toml
+# for Québec).
+#
+# =============================================================================
+
+[calendar]
+name        = "canada"
+description = "Canada federal statutory holidays (6 of 9, excludes Easter-dependent and Victoria Day)"
+
+[types]
+DOM = "Calendar Day of Month — fixed date (e.g., Jul 1)"
+NOW = "Nth Weekday of Month — relative date (e.g., 1st Monday in September)"
+
+# -----------------------------------------------------------------------------
+# January
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "New Year's Day"
+type               = "DOM"
+month              = 1
+day                = 1
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1867
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# February
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Family Day"
+type               = "NOW"
+month              = 2
+day                = 0
+week               = 3
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 2019
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# July
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Canada Day"
+type               = "DOM"
+month              = 7
+day                = 1
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1879
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# September
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Labour Day"
+type               = "NOW"
+month              = 9
+day                = 0
+week               = 1
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1894
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# September / October
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "National Day for Truth and Reconciliation"
+type               = "DOM"
+month              = 9
+day                = 30
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 2021
+enabled            = true
+
+[[holidays]]
+name               = "Thanksgiving Day"
+type               = "NOW"
+month              = 10
+day                = 0
+week               = 2
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1957
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# November
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Remembrance Day"
+type               = "DOM"
+month              = 11
+day                = 11
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1931
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# December
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Christmas Day"
+type               = "DOM"
+month              = 12
+day                = 25
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1867
+enabled            = true
+
+[[holidays]]
+name               = "Boxing Day"
+type               = "DOM"
+month              = 12
+day                = 26
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1867
+enabled            = true

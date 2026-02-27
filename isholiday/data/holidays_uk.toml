@@ -1,0 +1,127 @@
+# =============================================================================
+# United Kingdom — England & Wales Bank Holidays
+# =============================================================================
+#
+# Bank holidays observed in England and Wales under the Banking and Financial
+# Dealings Act 1971 (as amended).
+#
+# COVERAGE: 6 of 8 standard bank holidays. Excludes Easter-dependent holidays
+# (Good Friday, Easter Monday) which require a future EASTER rule type.
+#
+# Holiday type codes:
+#   DOM — Calendar Day of Month: fixed date (e.g., December 25th)
+#   NOW — Nth Weekday of Month: relative date (e.g., last Monday in May)
+#
+# Weekday values use SQL Server convention:
+#   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
+#
+# Special sentinel: week = 10 means "last occurrence of that weekday in the month"
+#
+# Observed-date rules:
+#   When a bank holiday falls on a weekend, the "substitute day" is the next
+#   available weekday (typically Monday, or Tuesday if Monday is also a holiday).
+#   IsHoliday handles Saturday→Monday and Sunday→Monday shifting natively.
+#   The Boxing Day + Christmas double-shift (Tue substitute) requires the
+#   adjacent-holiday logic to be added in a future version.
+#
+# NOT INCLUDED (require future rule types):
+#   - Good Friday (Easter - 2 days) — needs EASTER rule type
+#   - Easter Monday (Easter + 1 day) — needs EASTER rule type
+#
+# =============================================================================
+
+[calendar]
+name        = "uk"
+description = "United Kingdom bank holidays — England & Wales (6 of 8, excludes Easter-dependent)"
+
+[types]
+DOM = "Calendar Day of Month — fixed date (e.g., Dec 25)"
+NOW = "Nth Weekday of Month — relative date (e.g., last Monday in May)"
+
+# -----------------------------------------------------------------------------
+# January
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "New Year's Day"
+type               = "DOM"
+month              = 1
+day                = 1
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1974
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# May
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Early May Bank Holiday"
+type               = "NOW"
+month              = 5
+day                = 0
+week               = 1
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1978
+enabled            = true
+
+[[holidays]]
+name               = "Spring Bank Holiday"
+type               = "NOW"
+month              = 5
+day                = 0
+week               = 10
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1971
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# August
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Summer Bank Holiday"
+type               = "NOW"
+month              = 8
+day                = 0
+week               = 10
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1971
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# December
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Christmas Day"
+type               = "DOM"
+month              = 12
+day                = 25
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1871
+enabled            = true
+
+[[holidays]]
+name               = "Boxing Day"
+type               = "DOM"
+month              = 12
+day                = 26
+week               = 0
+weekday            = 0
+saturday_to_friday = false
+sunday_to_monday   = true
+year_added         = 1871
+enabled            = true
