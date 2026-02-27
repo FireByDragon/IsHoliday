@@ -1,8 +1,21 @@
 # IsHoliday
 
-Determine if a date is a US holiday. Zero dependencies, pure Python 3.11+.
+**Define the rule once. Calculate holidays forever.**
 
-Supports multiple holiday calendars via TOML configuration files — banking (Federal Reserve), stock market (NYSE/NASDAQ), or your own custom calendar.
+Most holiday libraries use year-by-year lookup tables that require annual maintenance and data updates. IsHoliday takes a fundamentally different approach: holidays are defined as **rules**, not rows. "Christmas is December 25th" and "Thanksgiving is the 4th Thursday in November" are rules that never change. Define them once and IsHoliday computes the correct observed dates for any year — past, present, or future — with zero maintenance.
+
+No annual data files. No version bumps just to add next year. No tables to manage.
+
+## Why IsHoliday?
+
+| | Traditional Libraries | IsHoliday |
+|---|---|---|
+| **Data model** | Year-by-year lookup tables | Rule-based definitions |
+| **Annual maintenance** | Required (new year = new data) | None (rules compute any year) |
+| **Future dates** | Only if table includes them | Unlimited — works for any year |
+| **Custom calendars** | Edit source code or subclass | Drop in a TOML file |
+| **Dependencies** | Often pulls in heavy packages | Zero — pure Python stdlib |
+| **Configuration** | Hardcoded or complex APIs | Simple, human-readable TOML |
 
 ## Installation
 
@@ -10,21 +23,21 @@ Supports multiple holiday calendars via TOML configuration files — banking (Fe
 pip install isholiday
 ```
 
+Requires Python 3.11+. Zero external dependencies.
+
 ## Quick Start
 
 ```python
 from datetime import date
 from isholiday import is_holiday, get_holiday, get_holidays, is_business_day
 
-# Check if a date is a market holiday
-is_holiday(date(2025, 12, 25))          # True (Christmas Day)
-is_holiday(date(2025, 12, 24))          # False
+# Is today a holiday?
+is_holiday(date(2025, 12, 25))          # True
 
-# Get the holiday name
+# What holiday is it?
 get_holiday(date(2025, 12, 25))         # "Christmas Day"
-get_holiday(date(2025, 3, 11))          # None
 
-# List all holidays for a year
+# All holidays for a year
 get_holidays(2025)
 # [(date(2025, 1, 1),   "New Year's Day"),
 #  (date(2025, 1, 20),  "Martin Luther King Jr. Day"),
@@ -36,48 +49,59 @@ get_holidays(2025)
 #  (date(2025, 11, 27), "Thanksgiving Day"),
 #  (date(2025, 12, 25), "Christmas Day")]
 
-# Check if a date is a business day (weekday + not a holiday)
+# Is it a business day? (weekday + not a holiday)
 is_business_day(date(2025, 12, 25))     # False (holiday)
 is_business_day(date(2025, 12, 27))     # False (Saturday)
-is_business_day(date(2025, 12, 26))     # True  (Friday, not a holiday)
+is_business_day(date(2025, 12, 26))     # True  (regular Friday)
+
+# Works for any year — no tables to maintain
+get_holidays(2050)                       # Just works
 ```
 
-## Calendars
+## Built-in Calendars
 
-### Built-in Calendars
+IsHoliday ships with two calendars out of the box:
 
-| Calendar | Holidays | Use Case |
-|----------|----------|----------|
-| `"market"` (default) | 9 | NYSE / NASDAQ trading days |
-| `"banking"` | 11 | Federal Reserve banking holidays |
+| Calendar | Holidays | Description |
+|----------|----------|-------------|
+| `"market"` (default) | 9 | NYSE / NASDAQ stock market holidays |
+| `"banking"` | 11 | US Federal Reserve banking holidays |
 
-The **market** calendar excludes Columbus Day and Veterans Day (markets trade on those days). The **banking** calendar includes all 11 Federal Reserve holidays.
+The **market** calendar excludes Columbus Day and Veterans Day — the stock exchanges remain open on those days. The **banking** calendar includes all 11 Federal Reserve holidays.
 
 ```python
-# Banking calendar includes Columbus Day
+# Columbus Day: banks closed, markets open
 is_holiday(date(2025, 10, 13), calendar="banking")   # True
 is_holiday(date(2025, 10, 13), calendar="market")    # False
 ```
 
-### Custom Calendars
+## Custom Calendars
 
-Create your own TOML calendar file and pass its path:
+Need company holidays? A different country? Industry-specific closures? Create a TOML file and point IsHoliday at it:
 
 ```python
 is_holiday(date(2025, 1, 1), calendar="/path/to/my_holidays.toml")
 ```
 
-TOML format:
+### TOML Format
+
+Holidays are defined using two rule types:
+
+| Type | Rule | Example |
+|------|------|---------|
+| `DOM` | Fixed calendar date | Christmas = December 25 every year |
+| `NOW` | Nth weekday of a month | Thanksgiving = 4th Thursday in November |
 
 ```toml
 [calendar]
-name        = "custom"
-description = "My custom holiday calendar"
+name        = "my-company"
+description = "Company holiday calendar"
 
 [types]
 DOM = "Calendar Day of Month"
 NOW = "Nth Weekday of Month"
 
+# Fixed date: observe on Friday if Saturday, Monday if Sunday
 [[holidays]]
 name               = "New Year's Day"
 type               = "DOM"
@@ -88,28 +112,40 @@ sunday_to_monday   = true
 year_added         = 1870
 enabled            = true
 
+# Relative date: 4th Thursday in November
 [[holidays]]
 name               = "Thanksgiving Day"
 type               = "NOW"
 month              = 11
-week               = 4          # 4th occurrence
-weekday            = 5          # Thursday (SQL convention: 1=Sun, 2=Mon, ..., 7=Sat)
+week               = 4
+weekday            = 5          # 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat
 saturday_to_friday = false
 sunday_to_monday   = false
 year_added         = 1941
 enabled            = true
 ```
 
-## Holiday Types
+### Observed-Date Rules
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `DOM` | Fixed calendar date | Christmas = December 25 |
-| `NOW` | Nth weekday of month | Thanksgiving = 4th Thursday in November |
+When a fixed-date holiday falls on a weekend, it can shift to the nearest weekday:
 
-**Observed-date rules**: When a DOM holiday falls on Saturday, it shifts to Friday. When it falls on Sunday, it shifts to Monday. These are configurable per holiday via `saturday_to_friday` and `sunday_to_monday`.
+- **Saturday** holidays shift to Friday (`saturday_to_friday = true`)
+- **Sunday** holidays shift to Monday (`sunday_to_monday = true`)
 
-**Special sentinel**: `week = 10` means "last occurrence of that weekday" (e.g., Memorial Day = last Monday in May).
+These are configurable per holiday. Relative holidays (NOW type) always land on a weekday by definition, so shifting doesn't apply.
+
+### Special: Last Weekday of Month
+
+Use `week = 10` as a sentinel for "last occurrence" — for example, Memorial Day is the **last Monday in May**:
+
+```toml
+[[holidays]]
+name    = "Memorial Day"
+type    = "NOW"
+month   = 5
+week    = 10       # sentinel: last occurrence in the month
+weekday = 2        # Monday
+```
 
 ## API Reference
 
@@ -117,18 +153,26 @@ enabled            = true
 Returns `True` if the date is a holiday on the given calendar.
 
 ### `get_holiday(target_date, calendar="market") -> Optional[str]`
-Returns the holiday name, or `None` if not a holiday.
+Returns the holiday name, or `None`.
 
 ### `get_holidays(year, calendar="market") -> list[tuple[date, str]]`
-Returns all `(date, name)` pairs for the given year, sorted chronologically.
+Returns all `(date, name)` pairs for the year, sorted chronologically.
 
 ### `is_business_day(target_date, calendar="market") -> bool`
 Returns `True` if the date is a weekday **and** not a holiday.
 
-## Requirements
+All functions accept `calendar` as `"market"`, `"banking"`, or a file path to a custom TOML calendar.
 
-- Python 3.11+ (uses `tomllib` from stdlib)
-- Zero external dependencies
+## How It Works
+
+IsHoliday encodes each holiday as a **rule** — not a table row for each year. At query time, it:
+
+1. Reads the rule definitions from a TOML file (cached after first load)
+2. Computes the actual date for the target year using calendar math
+3. Applies observed-date shifting (Saturday to Friday, Sunday to Monday)
+4. Handles year-boundary edge cases (e.g., New Year's on Saturday is observed Dec 31)
+
+The computation is pure math — no network calls, no database, no external data. It works offline, in CI pipelines, in embedded systems, anywhere Python runs.
 
 ## License
 
