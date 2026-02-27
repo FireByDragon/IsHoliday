@@ -1,0 +1,195 @@
+# =============================================================================
+# US Federal Reserve Banking Holidays
+# =============================================================================
+#
+# Holiday type codes:
+#   DOM — Calendar Day of Month: fixed date (e.g., January 1st)
+#   NOW — Nth Weekday of Month: relative date (e.g., 3rd Monday in January)
+#
+# Weekday values use SQL Server convention:
+#   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
+#
+# Special sentinel: week = 10 means "last occurrence of that weekday in the month"
+#   (e.g., Memorial Day = last Monday in May)
+#
+# Observed-date rules:
+#   saturday_to_friday — when the actual date falls on Saturday, observe on Friday
+#   sunday_to_monday   — when the actual date falls on Sunday, observe on Monday
+#
+# =============================================================================
+
+[calendar]
+name        = "banking"
+description = "US Federal Reserve banking holidays (11 holidays)"
+
+[types]
+DOM = "Calendar Day of Month — fixed date (e.g., Jan 1)"
+NOW = "Nth Weekday of Month — relative date (e.g., 3rd Monday in January)"
+
+# -----------------------------------------------------------------------------
+# January
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "New Year's Day"
+type               = "DOM"
+month              = 1
+day                = 1
+week               = 0
+weekday            = 0
+saturday_to_friday = true
+sunday_to_monday   = true
+year_added         = 1870
+enabled            = true
+
+[[holidays]]
+name               = "Martin Luther King Jr. Day"
+type               = "NOW"
+month              = 1
+day                = 0
+week               = 3
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1983
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# February
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Presidents' Day"
+type               = "NOW"
+month              = 2
+day                = 0
+week               = 3
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1879
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# May
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Memorial Day"
+type               = "NOW"
+month              = 5
+day                = 0
+week               = 10
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1971
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# June
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Juneteenth National Independence Day"
+type               = "DOM"
+month              = 6
+day                = 19
+week               = 0
+weekday            = 0
+saturday_to_friday = true
+sunday_to_monday   = true
+year_added         = 2021
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# July
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Independence Day"
+type               = "DOM"
+month              = 7
+day                = 4
+week               = 0
+weekday            = 0
+saturday_to_friday = true
+sunday_to_monday   = true
+year_added         = 1938
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# September
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Labor Day"
+type               = "NOW"
+month              = 9
+day                = 0
+week               = 1
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1894
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# October
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Columbus Day"
+type               = "NOW"
+month              = 10
+day                = 0
+week               = 2
+weekday            = 2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1937
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# November
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Veterans Day"
+type               = "DOM"
+month              = 11
+day                = 11
+week               = 0
+weekday            = 0
+saturday_to_friday = true
+sunday_to_monday   = true
+year_added         = 1938
+enabled            = true
+
+[[holidays]]
+name               = "Thanksgiving Day"
+type               = "NOW"
+month              = 11
+day                = 0
+week               = 4
+weekday            = 5
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1941
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# December
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Christmas Day"
+type               = "DOM"
+month              = 12
+day                = 25
+week               = 0
+weekday            = 0
+saturday_to_friday = true
+sunday_to_monday   = true
+year_added         = 1870
+enabled            = true

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "IsHoliday"
+version = "1.0.0"
+description = "Determine if a date is a US holiday — banking, market, or custom calendars via TOML"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "FireByDragon"}]
+
+[tool.setuptools.packages.find]
+include = ["isholiday*"]
+
+[tool.setuptools.package-data]
+"isholiday.data" = ["*.toml"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
