@@ -5,12 +5,12 @@
 # Bank holidays observed in England and Wales under the Banking and Financial
 # Dealings Act 1971 (as amended).
 #
-# COVERAGE: 6 of 8 standard bank holidays. Excludes Easter-dependent holidays
-# (Good Friday, Easter Monday) which require a future EASTER rule type.
+# COVERAGE: 8 of 8 standard bank holidays.
 #
 # Holiday type codes:
-#   DOM — Calendar Day of Month: fixed date (e.g., December 25th)
-#   NOW — Nth Weekday of Month: relative date (e.g., last Monday in May)
+#   DOM    — Calendar Day of Month: fixed date (e.g., December 25th)
+#   NOW    — Nth Weekday of Month: relative date (e.g., last Monday in May)
+#   EASTER — Offset from Easter Sunday (e.g., Good Friday = Easter − 2)
 #
 # Weekday values use SQL Server convention:
 #   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
@@ -24,19 +24,16 @@
 #   The Boxing Day + Christmas double-shift (Tue substitute) requires the
 #   adjacent-holiday logic to be added in a future version.
 #
-# NOT INCLUDED (require future rule types):
-#   - Good Friday (Easter - 2 days) — needs EASTER rule type
-#   - Easter Monday (Easter + 1 day) — needs EASTER rule type
-#
 # =============================================================================
 
 [calendar]
 name        = "uk"
-description = "United Kingdom bank holidays — England & Wales (6 of 8, excludes Easter-dependent)"
+description = "United Kingdom bank holidays — England & Wales (8 holidays)"
 
 [types]
-DOM = "Calendar Day of Month — fixed date (e.g., Dec 25)"
-NOW = "Nth Weekday of Month — relative date (e.g., last Monday in May)"
+DOM    = "Calendar Day of Month — fixed date (e.g., Dec 25)"
+NOW    = "Nth Weekday of Month — relative date (e.g., last Monday in May)"
+EASTER = "Offset from Easter Sunday (e.g., Good Friday = Easter − 2)"
 
 # -----------------------------------------------------------------------------
 # January
@@ -52,6 +49,36 @@ weekday            = 0
 saturday_to_friday = false
 sunday_to_monday   = true
 year_added         = 1974
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# March / April (Easter-dependent)
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Good Friday"
+type               = "EASTER"
+month              = 0
+day                = 0
+week               = 0
+weekday            = 0
+offset             = -2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1871
+enabled            = true
+
+[[holidays]]
+name               = "Easter Monday"
+type               = "EASTER"
+month              = 0
+day                = 0
+week               = 0
+weekday            = 0
+offset             = 1
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1871
 enabled            = true
 
 # -----------------------------------------------------------------------------

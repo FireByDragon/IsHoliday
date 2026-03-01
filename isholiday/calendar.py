@@ -4,9 +4,11 @@ Holiday calendar engine.
 Loads holiday definitions from TOML files, computes actual and observed
 dates for each holiday, and provides lookup functions used by the public API.
 
-Supports two holiday types:
-  DOM — Calendar Day of Month (fixed date like January 1st)
-  NOW — Nth Weekday of Month (relative date like 3rd Monday in January)
+Supports four holiday types:
+  DOM    — Calendar Day of Month (fixed date like January 1st)
+  NOW    — Nth Weekday of Month (relative date like 3rd Monday in January)
+  EASTER — Offset from Easter Sunday (e.g., Good Friday = Easter − 2)
+  BEFORE — Weekday on or before a date (e.g., Victoria Day = Monday ≤ May 24)
 
 Weekday values in TOML use the SQL Server convention:
   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
@@ -32,15 +34,16 @@ class HolidayDefinition:
     """A single holiday rule parsed from a TOML calendar file."""
 
     name: str
-    holiday_type: str           # "DOM" or "NOW"
+    holiday_type: str           # "DOM", "NOW", "EASTER", or "BEFORE"
     month: int
-    day: int                    # DOM: calendar day; NOW: unused (0)
-    week: int                   # NOW: occurrence (1–5, or 10 = last); DOM: unused (0)
-    weekday_sql: int            # NOW: SQL weekday (1=Sun..7=Sat); DOM: unused (0)
+    day: int                    # DOM: calendar day; BEFORE: anchor day; others: 0
+    week: int                   # NOW: occurrence (1–5, or 10 = last); others: 0
+    weekday_sql: int            # NOW/BEFORE: SQL weekday (1=Sun..7=Sat); others: 0
     saturday_to_friday: bool
     sunday_to_monday: bool
     year_added: int
     enabled: bool
+    offset: int                 # EASTER: days from Easter Sunday (e.g., -2, +1)
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +90,7 @@ def _parse_holiday_entry(entry: dict) -> HolidayDefinition:
     return HolidayDefinition(
         name=entry["name"],
         holiday_type=entry["type"],
-        month=entry["month"],
+        month=entry.get("month", 0),
         day=entry.get("day", 0),
         week=entry.get("week", 0),
         weekday_sql=entry.get("weekday", 0),
@@ -95,6 +98,7 @@ def _parse_holiday_entry(entry: dict) -> HolidayDefinition:
         sunday_to_monday=entry.get("sunday_to_monday", False),
         year_added=entry.get("year_added", 0),
         enabled=entry.get("enabled", True),
+        offset=entry.get("offset", 0),
     )
 
 
@@ -183,6 +187,89 @@ def _compute_nth_weekday(year: int, month: int, week: int, weekday_sql: int) -> 
 
 
 # ---------------------------------------------------------------------------
+# Date computation — EASTER (offset from Easter Sunday)
+# ---------------------------------------------------------------------------
+
+def _compute_easter_sunday(year: int) -> date:
+    """Compute Easter Sunday for a given year.
+
+    Uses the Anonymous Gregorian algorithm (Meeus/Jones/Butcher), valid for
+    any year in the Gregorian calendar.  Easter Sunday always falls between
+    March 22 and April 25.
+
+    Parameters
+    ----------
+    year : int
+
+    Returns
+    -------
+    date
+    """
+    a = year % 19
+    b = year // 100
+    c = year % 100
+    d = b // 4
+    e = b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i = c // 4
+    k = c % 4
+    el = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * el) // 451
+    month = (h + el - 7 * m + 114) // 31
+    day = ((h + el - 7 * m + 114) % 31) + 1
+    return date(year, month, day)
+
+
+def _compute_easter_offset(year: int, offset: int) -> date:
+    """Compute a date relative to Easter Sunday.
+
+    Parameters
+    ----------
+    year : int
+    offset : int
+        Days from Easter Sunday (e.g., -2 for Good Friday, +1 for Easter Monday).
+
+    Returns
+    -------
+    date
+    """
+    return _compute_easter_sunday(year) + timedelta(days=offset)
+
+
+# ---------------------------------------------------------------------------
+# Date computation — BEFORE (weekday on or before a date)
+# ---------------------------------------------------------------------------
+
+def _compute_weekday_on_or_before(
+    year: int, month: int, day: int, weekday_sql: int,
+) -> date:
+    """Find the target weekday on or before the given anchor date.
+
+    For example, Victoria Day = Monday on or before May 24:
+    ``_compute_weekday_on_or_before(2025, 5, 24, 2)`` → May 19 (Monday).
+
+    Parameters
+    ----------
+    year : int
+    month : int
+    day : int
+        Anchor day of month (inclusive upper bound).
+    weekday_sql : int
+        Target weekday in SQL convention (1=Sun, 2=Mon, ..., 7=Sat).
+
+    Returns
+    -------
+    date
+    """
+    target_iso = _SQL_TO_ISO[weekday_sql]
+    anchor = date(year, month, day)
+    days_back = (anchor.isoweekday() - target_iso) % 7
+    return anchor - timedelta(days=days_back)
+
+
+# ---------------------------------------------------------------------------
 # Actual → observed date shifting
 # ---------------------------------------------------------------------------
 
@@ -233,6 +320,12 @@ def _resolve_holiday_date(definition: HolidayDefinition, year: int) -> Optional[
     elif definition.holiday_type == "NOW":
         actual = _compute_nth_weekday(
             year, definition.month, definition.week, definition.weekday_sql,
+        )
+    elif definition.holiday_type == "EASTER":
+        actual = _compute_easter_offset(year, definition.offset)
+    elif definition.holiday_type == "BEFORE":
+        actual = _compute_weekday_on_or_before(
+            year, definition.month, definition.day, definition.weekday_sql,
         )
     else:
         return None

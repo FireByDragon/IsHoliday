@@ -253,9 +253,9 @@ class TestGetHolidays:
         assert len(holidays) == 9
 
     def test_banking_holidays_2025_count(self):
-        """The banking calendar should have 11 holidays in 2025."""
+        """The banking calendar should have 13 holidays in 2025."""
         holidays = get_holidays(2025, calendar="banking")
-        assert len(holidays) == 11
+        assert len(holidays) == 13
 
     def test_market_holidays_2025_dates(self):
         """Verify every 2025 market holiday date and name."""
@@ -349,9 +349,9 @@ class TestUKHolidays:
         assert get_holiday(date(2025, 12, 26), calendar="uk") == "Boxing Day"
 
     def test_uk_holidays_2025_count(self):
-        """UK calendar has 6 holidays (excludes Easter-dependent)."""
+        """UK calendar has 8 holidays."""
         holidays = get_holidays(2025, calendar="uk")
-        assert len(holidays) == 6
+        assert len(holidays) == 8
 
     def test_uk_not_a_us_holiday(self):
         """US Independence Day is not a UK holiday."""
@@ -375,10 +375,10 @@ class TestCanadaHolidays:
         assert is_holiday(date(2025, 7, 1), calendar="canada") is True
         assert get_holiday(date(2025, 7, 1), calendar="canada") == "Canada Day"
 
-    def test_canada_victoria_day_not_included(self):
-        """Victoria Day requires a BEFORE rule type — not in this calendar."""
-        # Victoria Day = Monday on or before May 24 (not a simple nth-weekday)
-        assert is_holiday(date(2025, 5, 19), calendar="canada") is False
+    def test_canada_victoria_day_2025(self):
+        """Victoria Day 2025 = Monday on or before May 24 = May 19."""
+        assert is_holiday(date(2025, 5, 19), calendar="canada") is True
+        assert get_holiday(date(2025, 5, 19), calendar="canada") == "Victoria Day"
 
     def test_canada_labour_day_2025(self):
         """Labour Day 2025 = 1st Monday in Sep = Sep 1."""
@@ -404,9 +404,9 @@ class TestCanadaHolidays:
         assert is_holiday(date(2020, 9, 30), calendar="canada") is False
 
     def test_canada_holidays_2025_count(self):
-        """Canada calendar has 9 holidays in 2025 (excludes Easter + Victoria Day)."""
+        """Canada calendar has 12 holidays in 2025."""
         holidays = get_holidays(2025, calendar="canada")
-        assert len(holidays) == 9
+        assert len(holidays) == 12
 
     def test_canada_boxing_day_2025(self):
         """Boxing Day 2025 = Friday Dec 26."""
@@ -500,6 +500,155 @@ class TestJapanHolidays:
     def test_japan_emperor_birthday_before_2020(self):
         """Emperor's Birthday (Feb 23) was enacted in 2020 — 2019 should be False."""
         assert is_holiday(date(2019, 2, 23), calendar="japan") is False
+
+
+# ============================================================================
+# EASTER holidays — Good Friday & Easter Monday
+# ============================================================================
+
+class TestEasterHolidays:
+    """EASTER rule type: holidays defined as an offset from Easter Sunday."""
+
+    # Known Easter Sunday dates (independently verified):
+    #   2024: Mar 31    2025: Apr 20    2026: Apr  5
+    #   2027: Mar 28    2028: Apr 16
+
+    # -- Good Friday (Easter − 2) -----------------------------------------------
+
+    def test_good_friday_2024_uk(self):
+        """Good Friday 2024 = Mar 29 (Easter Mar 31 − 2)."""
+        assert is_holiday(date(2024, 3, 29), calendar="uk") is True
+        assert get_holiday(date(2024, 3, 29), calendar="uk") == "Good Friday"
+
+    def test_good_friday_2025_uk(self):
+        """Good Friday 2025 = Apr 18 (Easter Apr 20 − 2)."""
+        assert is_holiday(date(2025, 4, 18), calendar="uk") is True
+        assert get_holiday(date(2025, 4, 18), calendar="uk") == "Good Friday"
+
+    def test_good_friday_2026_uk(self):
+        """Good Friday 2026 = Apr 3 (Easter Apr 5 − 2)."""
+        assert is_holiday(date(2026, 4, 3), calendar="uk") is True
+
+    def test_good_friday_2027_uk(self):
+        """Good Friday 2027 = Mar 26 (Easter Mar 28 − 2)."""
+        assert is_holiday(date(2027, 3, 26), calendar="uk") is True
+
+    def test_good_friday_2028_uk(self):
+        """Good Friday 2028 = Apr 14 (Easter Apr 16 − 2)."""
+        assert is_holiday(date(2028, 4, 14), calendar="uk") is True
+
+    # -- Easter Monday (Easter + 1) ---------------------------------------------
+
+    def test_easter_monday_2024_uk(self):
+        """Easter Monday 2024 = Apr 1 (Easter Mar 31 + 1)."""
+        assert is_holiday(date(2024, 4, 1), calendar="uk") is True
+        assert get_holiday(date(2024, 4, 1), calendar="uk") == "Easter Monday"
+
+    def test_easter_monday_2025_uk(self):
+        """Easter Monday 2025 = Apr 21 (Easter Apr 20 + 1)."""
+        assert is_holiday(date(2025, 4, 21), calendar="uk") is True
+        assert get_holiday(date(2025, 4, 21), calendar="uk") == "Easter Monday"
+
+    def test_easter_monday_2026_uk(self):
+        """Easter Monday 2026 = Apr 6 (Easter Apr 5 + 1)."""
+        assert is_holiday(date(2026, 4, 6), calendar="uk") is True
+
+    def test_easter_monday_2027_uk(self):
+        """Easter Monday 2027 = Mar 29 (Easter Mar 28 + 1)."""
+        assert is_holiday(date(2027, 3, 29), calendar="uk") is True
+
+    def test_easter_monday_2028_uk(self):
+        """Easter Monday 2028 = Apr 17 (Easter Apr 16 + 1)."""
+        assert is_holiday(date(2028, 4, 17), calendar="uk") is True
+
+    # -- Cross-calendar: same dates in Canada and banking -----------------------
+
+    def test_good_friday_2025_canada(self):
+        """Good Friday 2025 = Apr 18 on Canada calendar."""
+        assert is_holiday(date(2025, 4, 18), calendar="canada") is True
+        assert get_holiday(date(2025, 4, 18), calendar="canada") == "Good Friday"
+
+    def test_easter_monday_2025_canada(self):
+        """Easter Monday 2025 = Apr 21 on Canada calendar."""
+        assert is_holiday(date(2025, 4, 21), calendar="canada") is True
+        assert get_holiday(date(2025, 4, 21), calendar="canada") == "Easter Monday"
+
+    def test_good_friday_2025_banking(self):
+        """Good Friday 2025 = Apr 18 on US banking calendar."""
+        assert is_holiday(date(2025, 4, 18), calendar="banking") is True
+        assert get_holiday(date(2025, 4, 18), calendar="banking") == "Good Friday"
+
+    def test_easter_monday_2025_banking(self):
+        """Easter Monday 2025 = Apr 21 on US banking calendar."""
+        assert is_holiday(date(2025, 4, 21), calendar="banking") is True
+        assert get_holiday(date(2025, 4, 21), calendar="banking") == "Easter Monday"
+
+    # -- Easter is NOT on the market calendar ------------------------------------
+
+    def test_good_friday_not_on_market(self):
+        """Good Friday is not a NYSE/NASDAQ market holiday."""
+        assert is_holiday(date(2025, 4, 18), calendar="market") is False
+
+    # -- Non-Easter dates are not holidays --------------------------------------
+
+    def test_day_after_easter_monday_not_holiday(self):
+        """The Tuesday after Easter is not a holiday."""
+        assert is_holiday(date(2025, 4, 22), calendar="uk") is False
+
+    def test_easter_sunday_not_a_holiday(self):
+        """Easter Sunday itself is not defined as a bank holiday."""
+        assert is_holiday(date(2025, 4, 20), calendar="uk") is False
+
+
+# ============================================================================
+# BEFORE holidays — Victoria Day (weekday on or before a date)
+# ============================================================================
+
+class TestVictoriaDay:
+    """BEFORE rule type: Monday on or before May 24 (Canada)."""
+
+    # May 24 weekday by year:
+    #   2024: Friday   → Victoria Day = May 20 (Mon)
+    #   2025: Saturday → Victoria Day = May 19 (Mon)
+    #   2026: Sunday   → Victoria Day = May 18 (Mon)
+    #   2027: Monday   → Victoria Day = May 24 (anchor IS Monday)
+    #   2028: Wednesday→ Victoria Day = May 22 (Mon)
+
+    def test_victoria_day_2024(self):
+        """Victoria Day 2024 = May 20 (May 24 is Friday → previous Monday)."""
+        assert is_holiday(date(2024, 5, 20), calendar="canada") is True
+        assert get_holiday(date(2024, 5, 20), calendar="canada") == "Victoria Day"
+
+    def test_victoria_day_2025(self):
+        """Victoria Day 2025 = May 19 (May 24 is Saturday → previous Monday)."""
+        assert is_holiday(date(2025, 5, 19), calendar="canada") is True
+        assert get_holiday(date(2025, 5, 19), calendar="canada") == "Victoria Day"
+
+    def test_victoria_day_2026(self):
+        """Victoria Day 2026 = May 18 (May 24 is Sunday → previous Monday)."""
+        assert is_holiday(date(2026, 5, 18), calendar="canada") is True
+
+    def test_victoria_day_2027_anchor_is_monday(self):
+        """Victoria Day 2027 = May 24 (anchor date IS Monday — zero offset)."""
+        assert is_holiday(date(2027, 5, 24), calendar="canada") is True
+        assert get_holiday(date(2027, 5, 24), calendar="canada") == "Victoria Day"
+
+    def test_victoria_day_2028(self):
+        """Victoria Day 2028 = May 22 (May 24 is Wednesday → previous Monday)."""
+        assert is_holiday(date(2028, 5, 22), calendar="canada") is True
+
+    def test_victoria_day_before_enactment(self):
+        """Victoria Day was enacted in 1953 — 1952 should be False."""
+        # In 1952, Monday on or before May 24 = May 19
+        assert is_holiday(date(1952, 5, 19), calendar="canada") is False
+
+    def test_victoria_day_not_on_uk(self):
+        """Victoria Day is a Canadian holiday, not UK."""
+        assert is_holiday(date(2025, 5, 19), calendar="uk") is False
+
+    def test_may_24_not_always_victoria_day(self):
+        """May 24 is NOT Victoria Day when it's not a Monday (2025: Saturday)."""
+        assert get_holiday(date(2025, 5, 24), calendar="canada") is None
 
 
 if __name__ == "__main__":

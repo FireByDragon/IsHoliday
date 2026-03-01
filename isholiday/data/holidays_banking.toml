@@ -3,8 +3,9 @@
 # =============================================================================
 #
 # Holiday type codes:
-#   DOM — Calendar Day of Month: fixed date (e.g., January 1st)
-#   NOW — Nth Weekday of Month: relative date (e.g., 3rd Monday in January)
+#   DOM    — Calendar Day of Month: fixed date (e.g., January 1st)
+#   NOW    — Nth Weekday of Month: relative date (e.g., 3rd Monday in January)
+#   EASTER — Offset from Easter Sunday (e.g., Good Friday = Easter − 2)
 #
 # Weekday values use SQL Server convention:
 #   1=Sunday, 2=Monday, 3=Tuesday, 4=Wednesday, 5=Thursday, 6=Friday, 7=Saturday
@@ -20,11 +21,12 @@
 
 [calendar]
 name        = "banking"
-description = "US Federal Reserve banking holidays (11 holidays)"
+description = "US Federal Reserve banking holidays (13 holidays)"
 
 [types]
-DOM = "Calendar Day of Month — fixed date (e.g., Jan 1)"
-NOW = "Nth Weekday of Month — relative date (e.g., 3rd Monday in January)"
+DOM    = "Calendar Day of Month — fixed date (e.g., Jan 1)"
+NOW    = "Nth Weekday of Month — relative date (e.g., 3rd Monday in January)"
+EASTER = "Offset from Easter Sunday (e.g., Good Friday = Easter − 2)"
 
 # -----------------------------------------------------------------------------
 # January
@@ -68,6 +70,36 @@ weekday            = 2
 saturday_to_friday = false
 sunday_to_monday   = false
 year_added         = 1879
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# March / April (Easter-dependent)
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Good Friday"
+type               = "EASTER"
+month              = 0
+day                = 0
+week               = 0
+weekday            = 0
+offset             = -2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1870
+enabled            = true
+
+[[holidays]]
+name               = "Easter Monday"
+type               = "EASTER"
+month              = 0
+day                = 0
+week               = 0
+weekday            = 0
+offset             = 1
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1870
 enabled            = true
 
 # -----------------------------------------------------------------------------
