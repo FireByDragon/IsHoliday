@@ -6,8 +6,8 @@ For every holiday in each year, verifies:
   - The day BEFORE the holiday is NOT a holiday.
   - The day AFTER the holiday is NOT a holiday.
 
-Adjacent-holiday pairs (e.g., Christmas + Boxing Day) are excluded from the
-before/after lists because the neighbouring day is itself a holiday.
+When holidays are adjacent (e.g., Christmas + Boxing Day, Golden Week), the
+before/after boundary walks past the cluster to find the nearest non-holiday.
 
 All expected dates were independently verified against published calendars.
 """
@@ -95,7 +95,7 @@ HOLIDAYS_JAPAN = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day before each holiday
+# Non-holiday dates -- day before each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_BEFORE_JAPAN = [
@@ -165,7 +165,7 @@ NOT_HOLIDAYS_BEFORE_JAPAN = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day after each holiday
+# Non-holiday dates -- day after each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_AFTER_JAPAN = [
@@ -174,7 +174,7 @@ NOT_HOLIDAYS_AFTER_JAPAN = [
     date(2024, 2, 13),  # after National Foundation Day (建国記念の日) 2024
     date(2024, 2, 24),  # after Emperor's Birthday (天皇誕生日) 2024
     date(2024, 4, 30),  # after Shōwa Day (昭和の日) 2024
-    date(2024, 5, 5),  # after Greenery Day (みどりの日) 2024
+    date(2024, 5, 5),  # after Constitution Memorial Day (憲法記念日) 2024
     date(2024, 5, 7),  # after Children's Day (こどもの日) 2024
     date(2024, 7, 16),  # after Marine Day (海の日) 2024
     date(2024, 8, 13),  # after Mountain Day (山の日) 2024
@@ -200,7 +200,7 @@ NOT_HOLIDAYS_AFTER_JAPAN = [
     date(2026, 2, 12),  # after National Foundation Day (建国記念の日) 2026
     date(2026, 2, 24),  # after Emperor's Birthday (天皇誕生日) 2026
     date(2026, 4, 30),  # after Shōwa Day (昭和の日) 2026
-    date(2026, 5, 6),  # after Children's Day (こどもの日) 2026
+    date(2026, 5, 6),  # after Constitution Memorial Day (憲法記念日) 2026
     date(2026, 7, 21),  # after Marine Day (海の日) 2026
     date(2026, 8, 12),  # after Mountain Day (山の日) 2026
     date(2026, 9, 22),  # after Respect for the Aged Day (敬老の日) 2026
@@ -212,7 +212,7 @@ NOT_HOLIDAYS_AFTER_JAPAN = [
     date(2027, 2, 12),  # after National Foundation Day (建国記念の日) 2027
     date(2027, 2, 24),  # after Emperor's Birthday (天皇誕生日) 2027
     date(2027, 4, 30),  # after Shōwa Day (昭和の日) 2027
-    date(2027, 5, 6),  # after Children's Day (こどもの日) 2027
+    date(2027, 5, 6),  # after Constitution Memorial Day (憲法記念日) 2027
     date(2027, 7, 20),  # after Marine Day (海の日) 2027
     date(2027, 8, 12),  # after Mountain Day (山の日) 2027
     date(2027, 9, 21),  # after Respect for the Aged Day (敬老の日) 2027
@@ -224,7 +224,7 @@ NOT_HOLIDAYS_AFTER_JAPAN = [
     date(2028, 2, 12),  # after National Foundation Day (建国記念の日) 2028
     date(2028, 2, 24),  # after Emperor's Birthday (天皇誕生日) 2028
     date(2028, 4, 30),  # after Shōwa Day (昭和の日) 2028
-    date(2028, 5, 6),  # after Children's Day (こどもの日) 2028
+    date(2028, 5, 6),  # after Constitution Memorial Day (憲法記念日) 2028
     date(2028, 7, 18),  # after Marine Day (海の日) 2028
     date(2028, 8, 12),  # after Mountain Day (山の日) 2028
     date(2028, 9, 19),  # after Respect for the Aged Day (敬老の日) 2028
@@ -251,7 +251,7 @@ class TestJapanDayOf:
 
 
 class TestJapanDayBefore:
-    """The day before each holiday should NOT be a holiday."""
+    """The nearest non-holiday before each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_BEFORE_JAPAN)
     def test_not_holiday(self, target_date):
@@ -259,7 +259,7 @@ class TestJapanDayBefore:
 
 
 class TestJapanDayAfter:
-    """The day after each holiday should NOT be a holiday."""
+    """The nearest non-holiday after each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_AFTER_JAPAN)
     def test_not_holiday(self, target_date):

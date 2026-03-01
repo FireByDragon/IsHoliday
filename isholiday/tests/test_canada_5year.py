@@ -6,8 +6,8 @@ For every holiday in each year, verifies:
   - The day BEFORE the holiday is NOT a holiday.
   - The day AFTER the holiday is NOT a holiday.
 
-Adjacent-holiday pairs (e.g., Christmas + Boxing Day) are excluded from the
-before/after lists because the neighbouring day is itself a holiday.
+When holidays are adjacent (e.g., Christmas + Boxing Day, Golden Week), the
+before/after boundary walks past the cluster to find the nearest non-holiday.
 
 All expected dates were independently verified against published calendars.
 """
@@ -87,7 +87,7 @@ HOLIDAYS_CANADA = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day before each holiday
+# Non-holiday dates -- day before each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_BEFORE_CANADA = [
@@ -151,7 +151,7 @@ NOT_HOLIDAYS_BEFORE_CANADA = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day after each holiday
+# Non-holiday dates -- day after each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_AFTER_CANADA = [
@@ -165,7 +165,7 @@ NOT_HOLIDAYS_AFTER_CANADA = [
     date(2024, 10, 1),  # after National Day for Truth and Reconciliation 2024
     date(2024, 10, 15),  # after Thanksgiving Day 2024
     date(2024, 11, 12),  # after Remembrance Day 2024
-    date(2024, 12, 27),  # after Boxing Day 2024
+    date(2024, 12, 27),  # after Christmas Day 2024
     date(2025, 1, 2),  # after New Year's Day 2025
     date(2025, 2, 18),  # after Family Day 2025
     date(2025, 4, 19),  # after Good Friday 2025
@@ -176,7 +176,7 @@ NOT_HOLIDAYS_AFTER_CANADA = [
     date(2025, 10, 1),  # after National Day for Truth and Reconciliation 2025
     date(2025, 10, 14),  # after Thanksgiving Day 2025
     date(2025, 11, 12),  # after Remembrance Day 2025
-    date(2025, 12, 27),  # after Boxing Day 2025
+    date(2025, 12, 27),  # after Christmas Day 2025
     date(2026, 1, 2),  # after New Year's Day 2026
     date(2026, 2, 17),  # after Family Day 2026
     date(2026, 4, 4),  # after Good Friday 2026
@@ -187,7 +187,7 @@ NOT_HOLIDAYS_AFTER_CANADA = [
     date(2026, 10, 1),  # after National Day for Truth and Reconciliation 2026
     date(2026, 10, 13),  # after Thanksgiving Day 2026
     date(2026, 11, 12),  # after Remembrance Day 2026
-    date(2026, 12, 27),  # after Boxing Day 2026
+    date(2026, 12, 27),  # after Christmas Day 2026
     date(2027, 1, 2),  # after New Year's Day 2027
     date(2027, 2, 16),  # after Family Day 2027
     date(2027, 3, 27),  # after Good Friday 2027
@@ -210,7 +210,7 @@ NOT_HOLIDAYS_AFTER_CANADA = [
     date(2028, 10, 1),  # after National Day for Truth and Reconciliation 2028
     date(2028, 10, 10),  # after Thanksgiving Day 2028
     date(2028, 11, 12),  # after Remembrance Day 2028
-    date(2028, 12, 27),  # after Boxing Day 2028
+    date(2028, 12, 27),  # after Christmas Day 2028
 ]
 
 
@@ -231,7 +231,7 @@ class TestCanadaDayOf:
 
 
 class TestCanadaDayBefore:
-    """The day before each holiday should NOT be a holiday."""
+    """The nearest non-holiday before each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_BEFORE_CANADA)
     def test_not_holiday(self, target_date):
@@ -239,7 +239,7 @@ class TestCanadaDayBefore:
 
 
 class TestCanadaDayAfter:
-    """The day after each holiday should NOT be a holiday."""
+    """The nearest non-holiday after each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_AFTER_CANADA)
     def test_not_holiday(self, target_date):

@@ -6,8 +6,8 @@ For every holiday in each year, verifies:
   - The day BEFORE the holiday is NOT a holiday.
   - The day AFTER the holiday is NOT a holiday.
 
-Adjacent-holiday pairs (e.g., Christmas + Boxing Day) are excluded from the
-before/after lists because the neighbouring day is itself a holiday.
+When holidays are adjacent (e.g., Christmas + Boxing Day, Golden Week), the
+before/after boundary walks past the cluster to find the nearest non-holiday.
 
 All expected dates were independently verified against published calendars.
 """
@@ -92,7 +92,7 @@ HOLIDAYS_BANKING = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day before each holiday
+# Non-holiday dates -- day before each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_BEFORE_BANKING = [
@@ -165,7 +165,7 @@ NOT_HOLIDAYS_BEFORE_BANKING = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day after each holiday
+# Non-holiday dates -- day after each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_AFTER_BANKING = [
@@ -254,7 +254,7 @@ class TestBankingDayOf:
 
 
 class TestBankingDayBefore:
-    """The day before each holiday should NOT be a holiday."""
+    """The nearest non-holiday before each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_BEFORE_BANKING)
     def test_not_holiday(self, target_date):
@@ -262,7 +262,7 @@ class TestBankingDayBefore:
 
 
 class TestBankingDayAfter:
-    """The day after each holiday should NOT be a holiday."""
+    """The nearest non-holiday after each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_AFTER_BANKING)
     def test_not_holiday(self, target_date):

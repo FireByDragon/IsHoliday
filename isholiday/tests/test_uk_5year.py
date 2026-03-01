@@ -6,8 +6,8 @@ For every holiday in each year, verifies:
   - The day BEFORE the holiday is NOT a holiday.
   - The day AFTER the holiday is NOT a holiday.
 
-Adjacent-holiday pairs (e.g., Christmas + Boxing Day) are excluded from the
-before/after lists because the neighbouring day is itself a holiday.
+When holidays are adjacent (e.g., Christmas + Boxing Day, Golden Week), the
+before/after boundary walks past the cluster to find the nearest non-holiday.
 
 All expected dates were independently verified against published calendars.
 """
@@ -67,7 +67,7 @@ HOLIDAYS_UK = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day before each holiday
+# Non-holiday dates -- day before each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_BEFORE_UK = [
@@ -111,7 +111,7 @@ NOT_HOLIDAYS_BEFORE_UK = [
 
 
 # ---------------------------------------------------------------------------
-# Non-holiday dates -- day after each holiday
+# Non-holiday dates -- day after each holiday (walks past adjacent holidays)
 # ---------------------------------------------------------------------------
 
 NOT_HOLIDAYS_AFTER_UK = [
@@ -121,21 +121,21 @@ NOT_HOLIDAYS_AFTER_UK = [
     date(2024, 5, 7),  # after Early May Bank Holiday 2024
     date(2024, 5, 28),  # after Spring Bank Holiday 2024
     date(2024, 8, 27),  # after Summer Bank Holiday 2024
-    date(2024, 12, 27),  # after Boxing Day 2024
+    date(2024, 12, 27),  # after Christmas Day 2024
     date(2025, 1, 2),  # after New Year's Day 2025
     date(2025, 4, 19),  # after Good Friday 2025
     date(2025, 4, 22),  # after Easter Monday 2025
     date(2025, 5, 6),  # after Early May Bank Holiday 2025
     date(2025, 5, 27),  # after Spring Bank Holiday 2025
     date(2025, 8, 26),  # after Summer Bank Holiday 2025
-    date(2025, 12, 27),  # after Boxing Day 2025
+    date(2025, 12, 27),  # after Christmas Day 2025
     date(2026, 1, 2),  # after New Year's Day 2026
     date(2026, 4, 4),  # after Good Friday 2026
     date(2026, 4, 7),  # after Easter Monday 2026
     date(2026, 5, 5),  # after Early May Bank Holiday 2026
     date(2026, 5, 26),  # after Spring Bank Holiday 2026
     date(2026, 9, 1),  # after Summer Bank Holiday 2026
-    date(2026, 12, 27),  # after Boxing Day 2026
+    date(2026, 12, 27),  # after Christmas Day 2026
     date(2027, 1, 2),  # after New Year's Day 2027
     date(2027, 3, 27),  # after Good Friday 2027
     date(2027, 3, 30),  # after Easter Monday 2027
@@ -150,7 +150,7 @@ NOT_HOLIDAYS_AFTER_UK = [
     date(2028, 5, 2),  # after Early May Bank Holiday 2028
     date(2028, 5, 30),  # after Spring Bank Holiday 2028
     date(2028, 8, 29),  # after Summer Bank Holiday 2028
-    date(2028, 12, 27),  # after Boxing Day 2028
+    date(2028, 12, 27),  # after Christmas Day 2028
 ]
 
 
@@ -171,7 +171,7 @@ class TestUKDayOf:
 
 
 class TestUKDayBefore:
-    """The day before each holiday should NOT be a holiday."""
+    """The nearest non-holiday before each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_BEFORE_UK)
     def test_not_holiday(self, target_date):
@@ -179,7 +179,7 @@ class TestUKDayBefore:
 
 
 class TestUKDayAfter:
-    """The day after each holiday should NOT be a holiday."""
+    """The nearest non-holiday after each holiday should NOT be a holiday."""
 
     @pytest.mark.parametrize("target_date", NOT_HOLIDAYS_AFTER_UK)
     def test_not_holiday(self, target_date):
