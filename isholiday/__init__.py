@@ -1,9 +1,12 @@
 """
-IsHoliday — Determine if a date is a US holiday.
+IsHoliday — Determine if a date is a holiday.
 
 Supports multiple holiday calendars via TOML configuration files:
   - ``"market"``  — NYSE / NASDAQ holidays (9 holidays, default)
-  - ``"banking"`` — US Federal Reserve banking holidays (11 holidays)
+  - ``"banking"`` — US Federal Reserve banking holidays (13 holidays)
+  - ``"uk"``      — UK bank holidays (8 holidays)
+  - ``"canada"``  — Canadian statutory holidays (12 holidays)
+  - ``"japan"``   — Japanese national holidays (14 holidays)
   - ``"/path/to/custom.toml"`` — user-defined calendar
 
 Usage::
@@ -28,7 +31,7 @@ from typing import Optional
 
 from .calendar import holidays_for_year, lookup_holiday
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __all__ = ["is_holiday", "get_holiday", "get_holidays", "is_business_day"]
 
 
