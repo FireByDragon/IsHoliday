@@ -22,11 +22,12 @@
 
 [calendar]
 name        = "market"
-description = "US stock market holidays — NYSE and NASDAQ (9 holidays)"
+description = "US stock market holidays — NYSE and NASDAQ (10 holidays)"
 
 [types]
-DOM = "Calendar Day of Month — fixed date (e.g., Jan 1)"
-NOW = "Nth Weekday of Month — relative date (e.g., 3rd Monday in January)"
+DOM    = "Calendar Day of Month — fixed date (e.g., Jan 1)"
+NOW    = "Nth Weekday of Month — relative date (e.g., 3rd Monday in January)"
+EASTER = "Offset from Easter Sunday (e.g., Good Friday = Easter − 2)"
 
 # -----------------------------------------------------------------------------
 # January
@@ -70,6 +71,23 @@ weekday            = 2
 saturday_to_friday = false
 sunday_to_monday   = false
 year_added         = 1971
+enabled            = true
+
+# -----------------------------------------------------------------------------
+# March / April (Easter-dependent)
+# -----------------------------------------------------------------------------
+
+[[holidays]]
+name               = "Good Friday"
+type               = "EASTER"
+month              = 0
+day                = 0
+week               = 0
+weekday            = 0
+offset             = -2
+saturday_to_friday = false
+sunday_to_monday   = false
+year_added         = 1898
 enabled            = true
 
 # -----------------------------------------------------------------------------

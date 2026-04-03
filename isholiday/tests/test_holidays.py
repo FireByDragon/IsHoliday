@@ -248,9 +248,9 @@ class TestGetHolidays:
     """Verify the full holiday list for a given year."""
 
     def test_market_holidays_2025_count(self):
-        """The market calendar should have 9 holidays in 2025."""
+        """The market calendar should have 10 holidays in 2025."""
         holidays = get_holidays(2025, calendar="market")
-        assert len(holidays) == 9
+        assert len(holidays) == 10
 
     def test_banking_holidays_2025_count(self):
         """The banking calendar should have 13 holidays in 2025."""
@@ -264,6 +264,7 @@ class TestGetHolidays:
             (date(2025, 1, 1),   "New Year's Day"),
             (date(2025, 1, 20),  "Martin Luther King Jr. Day"),
             (date(2025, 2, 17),  "Presidents' Day"),
+            (date(2025, 4, 18),  "Good Friday"),
             (date(2025, 5, 26),  "Memorial Day"),
             (date(2025, 6, 19),  "Juneteenth National Independence Day"),
             (date(2025, 7, 4),   "Independence Day"),
@@ -583,11 +584,12 @@ class TestEasterHolidays:
         assert is_holiday(date(2025, 4, 21), calendar="banking") is True
         assert get_holiday(date(2025, 4, 21), calendar="banking") == "Easter Monday"
 
-    # -- Easter is NOT on the market calendar ------------------------------------
+    # -- Good Friday IS on the market calendar ------------------------------------
 
-    def test_good_friday_not_on_market(self):
-        """Good Friday is not a NYSE/NASDAQ market holiday."""
-        assert is_holiday(date(2025, 4, 18), calendar="market") is False
+    def test_good_friday_on_market(self):
+        """Good Friday is a NYSE/NASDAQ market holiday (since 1898)."""
+        assert is_holiday(date(2025, 4, 18), calendar="market") is True
+        assert get_holiday(date(2025, 4, 18), calendar="market") == "Good Friday"
 
     # -- Non-Easter dates are not holidays --------------------------------------
 

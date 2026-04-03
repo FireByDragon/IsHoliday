@@ -26,6 +26,7 @@ HOLIDAYS_MARKET = [
     (date(2024, 1, 1), "New Year's Day"),
     (date(2024, 1, 15), "Martin Luther King Jr. Day"),
     (date(2024, 2, 19), "Presidents' Day"),
+    (date(2024, 3, 29), "Good Friday"),
     (date(2024, 5, 27), "Memorial Day"),
     (date(2024, 6, 19), "Juneteenth National Independence Day"),
     (date(2024, 7, 4), "Independence Day"),
@@ -35,6 +36,7 @@ HOLIDAYS_MARKET = [
     (date(2025, 1, 1), "New Year's Day"),
     (date(2025, 1, 20), "Martin Luther King Jr. Day"),
     (date(2025, 2, 17), "Presidents' Day"),
+    (date(2025, 4, 18), "Good Friday"),
     (date(2025, 5, 26), "Memorial Day"),
     (date(2025, 6, 19), "Juneteenth National Independence Day"),
     (date(2025, 7, 4), "Independence Day"),
@@ -44,6 +46,7 @@ HOLIDAYS_MARKET = [
     (date(2026, 1, 1), "New Year's Day"),
     (date(2026, 1, 19), "Martin Luther King Jr. Day"),
     (date(2026, 2, 16), "Presidents' Day"),
+    (date(2026, 4, 3), "Good Friday"),
     (date(2026, 5, 25), "Memorial Day"),
     (date(2026, 6, 19), "Juneteenth National Independence Day"),
     (date(2026, 7, 3), "Independence Day"),
@@ -53,6 +56,7 @@ HOLIDAYS_MARKET = [
     (date(2027, 1, 1), "New Year's Day"),
     (date(2027, 1, 18), "Martin Luther King Jr. Day"),
     (date(2027, 2, 15), "Presidents' Day"),
+    (date(2027, 3, 26), "Good Friday"),
     (date(2027, 5, 31), "Memorial Day"),
     (date(2027, 6, 18), "Juneteenth National Independence Day"),
     (date(2027, 7, 5), "Independence Day"),
@@ -62,6 +66,7 @@ HOLIDAYS_MARKET = [
     (date(2027, 12, 31), "New Year's Day"),
     (date(2028, 1, 17), "Martin Luther King Jr. Day"),
     (date(2028, 2, 21), "Presidents' Day"),
+    (date(2028, 4, 14), "Good Friday"),
     (date(2028, 5, 29), "Memorial Day"),
     (date(2028, 6, 19), "Juneteenth National Independence Day"),
     (date(2028, 7, 4), "Independence Day"),
@@ -79,6 +84,7 @@ NOT_HOLIDAYS_BEFORE_MARKET = [
     date(2023, 12, 31),  # before New Year's Day 2024
     date(2024, 1, 14),  # before Martin Luther King Jr. Day 2024
     date(2024, 2, 18),  # before Presidents' Day 2024
+    date(2024, 3, 28),  # before Good Friday 2024
     date(2024, 5, 26),  # before Memorial Day 2024
     date(2024, 6, 18),  # before Juneteenth National Independence Day 2024
     date(2024, 7, 3),  # before Independence Day 2024
@@ -88,6 +94,7 @@ NOT_HOLIDAYS_BEFORE_MARKET = [
     date(2024, 12, 31),  # before New Year's Day 2025
     date(2025, 1, 19),  # before Martin Luther King Jr. Day 2025
     date(2025, 2, 16),  # before Presidents' Day 2025
+    date(2025, 4, 17),  # before Good Friday 2025
     date(2025, 5, 25),  # before Memorial Day 2025
     date(2025, 6, 18),  # before Juneteenth National Independence Day 2025
     date(2025, 7, 3),  # before Independence Day 2025
@@ -97,6 +104,7 @@ NOT_HOLIDAYS_BEFORE_MARKET = [
     date(2025, 12, 31),  # before New Year's Day 2026
     date(2026, 1, 18),  # before Martin Luther King Jr. Day 2026
     date(2026, 2, 15),  # before Presidents' Day 2026
+    date(2026, 4, 2),  # before Good Friday 2026
     date(2026, 5, 24),  # before Memorial Day 2026
     date(2026, 6, 18),  # before Juneteenth National Independence Day 2026
     date(2026, 7, 2),  # before Independence Day 2026
@@ -106,6 +114,7 @@ NOT_HOLIDAYS_BEFORE_MARKET = [
     date(2026, 12, 31),  # before New Year's Day 2027
     date(2027, 1, 17),  # before Martin Luther King Jr. Day 2027
     date(2027, 2, 14),  # before Presidents' Day 2027
+    date(2027, 3, 25),  # before Good Friday 2027
     date(2027, 5, 30),  # before Memorial Day 2027
     date(2027, 6, 17),  # before Juneteenth National Independence Day 2027
     date(2027, 7, 4),  # before Independence Day 2027
@@ -115,6 +124,7 @@ NOT_HOLIDAYS_BEFORE_MARKET = [
     date(2027, 12, 30),  # before New Year's Day 2027
     date(2028, 1, 16),  # before Martin Luther King Jr. Day 2028
     date(2028, 2, 20),  # before Presidents' Day 2028
+    date(2028, 4, 13),  # before Good Friday 2028
     date(2028, 5, 28),  # before Memorial Day 2028
     date(2028, 6, 18),  # before Juneteenth National Independence Day 2028
     date(2028, 7, 3),  # before Independence Day 2028
@@ -132,6 +142,7 @@ NOT_HOLIDAYS_AFTER_MARKET = [
     date(2024, 1, 2),  # after New Year's Day 2024
     date(2024, 1, 16),  # after Martin Luther King Jr. Day 2024
     date(2024, 2, 20),  # after Presidents' Day 2024
+    date(2024, 3, 30),  # after Good Friday 2024
     date(2024, 5, 28),  # after Memorial Day 2024
     date(2024, 6, 20),  # after Juneteenth National Independence Day 2024
     date(2024, 7, 5),  # after Independence Day 2024
@@ -141,6 +152,7 @@ NOT_HOLIDAYS_AFTER_MARKET = [
     date(2025, 1, 2),  # after New Year's Day 2025
     date(2025, 1, 21),  # after Martin Luther King Jr. Day 2025
     date(2025, 2, 18),  # after Presidents' Day 2025
+    date(2025, 4, 19),  # after Good Friday 2025
     date(2025, 5, 27),  # after Memorial Day 2025
     date(2025, 6, 20),  # after Juneteenth National Independence Day 2025
     date(2025, 7, 5),  # after Independence Day 2025
@@ -150,6 +162,7 @@ NOT_HOLIDAYS_AFTER_MARKET = [
     date(2026, 1, 2),  # after New Year's Day 2026
     date(2026, 1, 20),  # after Martin Luther King Jr. Day 2026
     date(2026, 2, 17),  # after Presidents' Day 2026
+    date(2026, 4, 4),  # after Good Friday 2026
     date(2026, 5, 26),  # after Memorial Day 2026
     date(2026, 6, 20),  # after Juneteenth National Independence Day 2026
     date(2026, 7, 4),  # after Independence Day 2026
@@ -159,6 +172,7 @@ NOT_HOLIDAYS_AFTER_MARKET = [
     date(2027, 1, 2),  # after New Year's Day 2027
     date(2027, 1, 19),  # after Martin Luther King Jr. Day 2027
     date(2027, 2, 16),  # after Presidents' Day 2027
+    date(2027, 3, 27),  # after Good Friday 2027
     date(2027, 6, 1),  # after Memorial Day 2027
     date(2027, 6, 19),  # after Juneteenth National Independence Day 2027
     date(2027, 7, 6),  # after Independence Day 2027
@@ -168,6 +182,7 @@ NOT_HOLIDAYS_AFTER_MARKET = [
     date(2028, 1, 1),  # after New Year's Day 2027
     date(2028, 1, 18),  # after Martin Luther King Jr. Day 2028
     date(2028, 2, 22),  # after Presidents' Day 2028
+    date(2028, 4, 15),  # after Good Friday 2028
     date(2028, 5, 30),  # after Memorial Day 2028
     date(2028, 6, 20),  # after Juneteenth National Independence Day 2028
     date(2028, 7, 5),  # after Independence Day 2028
